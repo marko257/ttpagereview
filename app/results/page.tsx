@@ -4,27 +4,37 @@ import CategoryCard from '@/components/CategoryCard'
 import PriorityFix from '@/components/PriorityFix'
 import RCNFooter from '@/components/RCNFooter'
 import ScoreCounter from '@/components/ScoreCounter'
+import { fetchProfile, fetchVideos } from '@/lib/tiktok'
+import { scoreProfilePhoto } from '@/lib/vision'
+import { computeScores } from '@/lib/scoring'
 import styles from './page.module.css'
 
 async function getAnalysis(username: string) {
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000'
+  try {
+    const [profile, videos] = await Promise.all([
+      fetchProfile(username),
+      fetchVideos(username, 20),
+    ])
 
-  const res = await fetch(`${baseUrl}/api/analyze?username=${encodeURIComponent(username)}`, {
-    cache: 'no-store',
-  })
+    const photoScore = await scoreProfilePhoto(profile.avatarUrl)
+    const scores = computeScores(profile, videos, photoScore)
 
-  const data = await res.json()
-
-  if (!res.ok || data.error === 'user_not_found') {
-    return { error: 'user_not_found' as const, username }
-  }
-  if (data.error) {
+    return {
+      username: profile.uniqueId,
+      displayName: profile.nickname,
+      avatarUrl: profile.avatarUrl,
+      followerCount: profile.followerCount,
+      videoCount: profile.videoCount,
+      ...scores,
+    }
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'unknown'
+    if (message === 'user_not_found') {
+      return { error: 'user_not_found' as const, username }
+    }
+    console.error('Analysis error:', err)
     return { error: 'api_error' as const }
   }
-
-  return data
 }
 
 function scoreColor(score: number) {
