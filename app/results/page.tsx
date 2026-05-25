@@ -7,6 +7,7 @@ import ScoreCounter from '@/components/ScoreCounter'
 import { fetchProfile, fetchVideos } from '@/lib/tiktok'
 import { scoreProfilePhoto } from '@/lib/vision'
 import { computeScores } from '@/lib/scoring'
+import ShareButton from '@/components/ShareButton'
 import styles from './page.module.css'
 
 async function getAnalysis(username: string) {
@@ -167,7 +168,10 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
           <span className={styles.logoDivider}>by</span>
           <span className={styles.logoRCN}>RCN</span>
         </a>
-        <a href="/" className="btn-primary">← New Review</a>
+        <div className={styles.navActions}>
+          <ShareButton username={username} />
+          <a href="/" className="btn-primary">← New Review</a>
+        </div>
       </nav>
 
       <main className={styles.main}>

@@ -27,6 +27,7 @@ export interface TikTokVideo {
   id: string
   desc: string
   createTime: number
+  isTop: boolean
   stats: {
     playCount: number
     likeCount: number
@@ -90,6 +91,7 @@ export async function fetchVideos(username: string, count = 20): Promise<TikTokV
       id: v.aweme_id || v.video_id || '',
       desc: title,
       createTime: v.create_time || 0,
+      isTop: v.is_top === 1 || v.is_top === true,
       stats: {
         playCount: v.play_count || 0,
         likeCount: v.digg_count || 0,

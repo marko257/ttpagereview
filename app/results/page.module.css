@@ -25,6 +25,12 @@
   gap: 10px;
 }
 
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .logoText {
   font-size: 16px;
   font-weight: 700;

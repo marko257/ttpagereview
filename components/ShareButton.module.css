@@ -1,0 +1,39 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--black);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.18s var(--ease-out),
+              background 0.18s var(--ease-out),
+              color 0.18s var(--ease-out),
+              transform 0.15s var(--ease-out);
+  white-space: nowrap;
+}
+
+.btn:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.copied {
+  border-color: var(--green, #16a34a);
+  background: var(--green-bg, #f0fdf4);
+  color: var(--green, #16a34a);
+}
+
+.copied:hover {
+  border-color: var(--green, #16a34a);
+  color: var(--green, #16a34a);
+}

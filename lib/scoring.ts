@@ -111,15 +111,22 @@ function scoreVideoGrid(videos: TikTokVideo[]): CategoryScore {
     return { id: 'videoGrid', label: 'Video Grid', score: 20, status: 'fail', feedback: 'No videos found. Post consistently to build your grid.', details: ['0 videos found', 'Need 2+ for analysis'] }
   }
 
+  // Pinned video detection
+  const pinnedCount = videos.filter(v => v.isTop).length
+  const pinnedBonus = pinnedCount > 0 ? 10 : 0
+
   // Check cover art consistency (non-empty cover URLs distinct from origin)
   const hasCoverArt = videos.filter(v => v.cover && v.cover !== v.originCover).length / videos.length
-  const coverScore = hasCoverArt > 0.8 ? 30 : hasCoverArt > 0.5 ? 20 : 0
+  const coverScore = hasCoverArt > 0.8 ? 25 : hasCoverArt > 0.5 ? 15 : 0
 
   // Check niche consistency via hashtag overlap
   const allHashtags = videos.flatMap(v => v.hashtags)
   const hashtagCounts: Record<string, number> = {}
   allHashtags.forEach(h => { hashtagCounts[h] = (hashtagCounts[h] || 0) + 1 })
-  const topHashtags = Object.entries(hashtagCounts).sort((a, b) => b[1] - a[1]).slice(0, 5)
+  const topHashtags = Object.entries(hashtagCounts)
+    .filter(([tag]) => !['fyp', 'foryou', 'foryoupage', 'viral', 'trending', 'xyzbca'].includes(tag))
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
   const topHashtagVideos = topHashtags.reduce((sum, [, count]) => sum + count, 0)
   const nicheConsistency = videos.length > 0 ? topHashtagVideos / (videos.length * 1.5) : 0
   const nicheScore = nicheConsistency > 0.6 ? 40 : nicheConsistency > 0.3 ? 25 : 0
@@ -130,9 +137,9 @@ function scoreVideoGrid(videos: TikTokVideo[]): CategoryScore {
     const newest = Math.max(...videos.map(v => v.createTime))
     const weekSpan = (newest - oldest) / (7 * 24 * 60 * 60)
     const videosPerWeek = weekSpan > 0 ? videos.length / weekSpan : videos.length
-    const freqScore = videosPerWeek >= 3 ? 30 : videosPerWeek >= 1 ? 20 : 10
+    const freqScore = videosPerWeek >= 3 ? 25 : videosPerWeek >= 1 ? 15 : 5
 
-    const total = Math.min(100, coverScore + nicheScore + freqScore)
+    const total = Math.min(100, coverScore + nicheScore + freqScore + pinnedBonus)
     const status = statusFromScore(total)
     const feedbacks: Record<string, string> = {
       pass: 'Consistent grid with strong niche focus.',
@@ -140,6 +147,14 @@ function scoreVideoGrid(videos: TikTokVideo[]): CategoryScore {
       fail: 'Grid lacks consistency in niche or posting frequency.',
     }
     const videosPerWeekDisplay = videosPerWeek.toFixed(1)
+
+    // Top 3 niche hashtags (exclude generic tags)
+    const top3Tags = Object.entries(hashtagCounts)
+      .filter(([tag]) => !['fyp', 'foryou', 'foryoupage', 'viral', 'trending', 'xyzbca'].includes(tag))
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([tag]) => `#${tag}`)
+
     return {
       id: 'videoGrid',
       label: 'Video Grid',
@@ -148,8 +163,8 @@ function scoreVideoGrid(videos: TikTokVideo[]): CategoryScore {
       feedback: feedbacks[status],
       details: [
         `${videosPerWeekDisplay} videos/week avg`,
-        `${Math.round(hasCoverArt * 100)}% have cover art`,
-        topHashtags.length > 0 ? `Top tag: #${topHashtags[0][0]}` : 'No hashtags found',
+        pinnedCount > 0 ? `${pinnedCount} pinned video${pinnedCount > 1 ? 's' : ''} ✓` : 'No pinned video',
+        top3Tags.length > 0 ? `Niche: ${top3Tags.join(' ')}` : 'No niche hashtags found',
       ],
     }
   }
