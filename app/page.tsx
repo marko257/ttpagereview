@@ -144,7 +144,7 @@ export default function Home() {
         <div className={styles.footerInner}>
           <div className={styles.footerLeft}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/rcn-logo.jpg" alt="Rise Creator Network" className={styles.footerLogo} />
+            <img src="/icon.png" alt="Rise Creator Network" className={styles.footerLogo} />
             <div>
               <p className={styles.footerHeadline}>The official TikTok LIVE agency behind this tool.</p>
               <p className={styles.footerText}>

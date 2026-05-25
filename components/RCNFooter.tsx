@@ -6,7 +6,7 @@ export default function RCNFooter() {
       <div className={styles.inner}>
         <div className={styles.left}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/rcn-logo.jpg" alt="Rise Creator Network" className={styles.logo} />
+          <img src="/icon.png" alt="Rise Creator Network" className={styles.logo} />
           <div>
             <p className={styles.headline}>The official TikTok LIVE agency behind this tool.</p>
             <p className={styles.tagline}>
