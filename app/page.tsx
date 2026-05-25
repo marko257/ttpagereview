@@ -37,24 +37,31 @@ export default function Home() {
         </div>
 
         <div className={styles.heroRight}>
-          {/* Floating preview scorecard — rich mockup */}
+          {/* Floating preview scorecard */}
           <div className={styles.previewCard}>
+
+            {/* Profile row */}
             <div className={styles.previewHeader}>
               <div className={styles.previewAvatarTC}>TC</div>
-              <div>
+              <div className={styles.previewInfo}>
                 <div className={styles.previewName}>Taylor Chen</div>
-                <div className={styles.previewMeta}>47.2K followers · 284 videos</div>
+                <div className={styles.previewMeta}>@taylorchen · 47.2K followers</div>
               </div>
-              <div className={styles.previewScore}>74</div>
+              <div className={styles.previewScoreBadge}>
+                <span className={styles.previewScoreNum}>74</span>
+                <span className={styles.previewScoreGrade}>Good</span>
+              </div>
             </div>
+
+            {/* Category bars */}
             <div className={styles.previewGrid}>
               {[
                 { label: 'Profile Photo', score: 88, color: '#16A34A' },
-                { label: 'Username', score: 72, color: '#16A34A' },
-                { label: 'Bio', score: 55, color: '#D97706' },
-                { label: 'Video Grid', score: 81, color: '#16A34A' },
-                { label: 'Engagement', score: 61, color: '#D97706' },
-                { label: 'Consistency', score: 40, color: '#D97706' },
+                { label: 'Username',      score: 72, color: '#16A34A' },
+                { label: 'Bio',           score: 55, color: '#D97706' },
+                { label: 'Video Grid',    score: 81, color: '#16A34A' },
+                { label: 'Engagement',    score: 61, color: '#D97706' },
+                { label: 'Consistency',   score: 40, color: '#D97706' },
               ].map((item) => (
                 <div key={item.label} className={styles.previewItem}>
                   <span className={styles.previewLabel}>{item.label}</span>
@@ -65,14 +72,19 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            {/* Priority fixes */}
             <div className={styles.previewFixes}>
-              <div className={styles.previewFix} style={{ color: '#DC2626', background: '#fef2f2', borderColor: '#fecaca' }}>
-                🔴 Bio missing stream schedule
+              <div className={styles.previewFixRow}>
+                <span className={styles.previewFixBadge} style={{ background: '#fef2f2', color: '#DC2626', borderColor: '#fecaca' }}>HIGH</span>
+                <span className={styles.previewFixText}>Bio missing stream schedule</span>
               </div>
-              <div className={styles.previewFix} style={{ color: '#D97706', background: '#fffbeb', borderColor: '#fde68a' }}>
-                🟡 Post more consistently
+              <div className={styles.previewFixRow}>
+                <span className={styles.previewFixBadge} style={{ background: '#fffbeb', color: '#D97706', borderColor: '#fde68a' }}>MED</span>
+                <span className={styles.previewFixText}>Post every 2–3 days minimum</span>
               </div>
             </div>
+
           </div>
         </div>
       </main>
