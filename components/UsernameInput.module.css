@@ -1,0 +1,50 @@
+.form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 18px;
+  gap: 4px;
+  transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  min-width: 240px;
+}
+
+.inputWrap:focus-within {
+  border-color: var(--black);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+}
+
+.at {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+  user-select: none;
+  line-height: 1;
+}
+
+.input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--black);
+  width: 100%;
+  line-height: 1;
+}
+
+.input::placeholder {
+  color: #c4c8ce;
+}
+
+.input:disabled {
+  opacity: 0.6;
+}
