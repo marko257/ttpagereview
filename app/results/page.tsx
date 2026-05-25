@@ -130,14 +130,6 @@ async function ResultsContent({ username }: { username: string }) {
         </div>
       )}
 
-      {/* Video Stats */}
-      {data.videoStats && (
-        <section className={`${styles.section} fade-up`} style={{ '--delay': '80ms' } as React.CSSProperties}>
-          <h2 className={styles.sectionTitle}>Post Performance</h2>
-          <VideoStatsGrid data={data.videoStats} />
-        </section>
-      )}
-
       {/* Categories */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Profile Breakdown</h2>
@@ -148,11 +140,17 @@ async function ResultsContent({ username }: { username: string }) {
         </div>
       </section>
 
-      {/* Video Analysis — Hashtags + Keywords */}
-      {(data.hashtagAnalysis || data.keywordAnalysis) && (
+      {/* Post Analysis — Performance + Hashtags + Keywords */}
+      {(data.videoStats || data.hashtagAnalysis || data.keywordAnalysis) && (
         <section className={`${styles.section} fade-up`} style={{ '--delay': '200ms' } as React.CSSProperties}>
-          <h2 className={styles.sectionTitle}>Video Analysis</h2>
+          <h2 className={styles.sectionTitle}>Post Analysis</h2>
           <div className={styles.analysisStack}>
+            {data.videoStats && (
+              <div>
+                <p className={styles.subSectionTitle}>Post Performance</p>
+                <VideoStatsGrid data={data.videoStats} />
+              </div>
+            )}
             {data.hashtagAnalysis && (
               <div>
                 <p className={styles.subSectionTitle}>Hashtag Strategy</p>
