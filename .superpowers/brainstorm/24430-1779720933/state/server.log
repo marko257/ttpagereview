@@ -1,6 +1,0 @@
-{"type":"server-started","port":50657,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:50657","screen_dir":"/Users/markonikolic/Documents/Projects/ttpagereview/.superpowers/brainstorm/24430-1779720933/content","state_dir":"/Users/markonikolic/Documents/Projects/ttpagereview/.superpowers/brainstorm/24430-1779720933/state"}
-{"type":"screen-added","file":"/Users/markonikolic/Documents/Projects/ttpagereview/.superpowers/brainstorm/24430-1779720933/content/output-style.html"}
-{"type":"screen-updated","file":"/Users/markonikolic/Documents/Projects/ttpagereview/.superpowers/brainstorm/24430-1779720933/content/output-style.html"}
-{"type":"screen-added","file":"/Users/markonikolic/Documents/Projects/ttpagereview/.superpowers/brainstorm/24430-1779720933/content/full-design.html"}
-{"type":"screen-updated","file":"/Users/markonikolic/Documents/Projects/ttpagereview/.superpowers/brainstorm/24430-1779720933/content/full-design.html"}
-{"type":"server-stopped","reason":"owner process exited"}
