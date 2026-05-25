@@ -14,39 +14,34 @@
   flex-wrap: wrap;
 }
 
-.content {
+.left {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
 }
 
-.logoRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
-.logoMark {
-  background: var(--blue);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 6px;
-  letter-spacing: 0.04em;
-}
-
-.logoText {
+.headline {
   font-size: 15px;
   font-weight: 700;
   color: #fff;
+  margin-bottom: 5px;
 }
 
 .tagline {
   font-size: 13px;
   color: rgba(255,255,255,0.6);
   line-height: 1.6;
-  max-width: 380px;
+  max-width: 420px;
 }
 
 .cta {
@@ -57,6 +52,30 @@
   flex-shrink: 0;
 }
 
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--blue);
+  color: #fff;
+  padding: 16px 28px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all 0.2s var(--ease-out);
+}
+
+.ctaBtn:hover {
+  background: var(--blue-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(59,143,246,0.45);
+}
+
+.ctaBtn:active {
+  transform: scale(0.97) translateY(1px);
+}
+
 .note {
   font-size: 12px;
   color: rgba(255,255,255,0.4);
@@ -65,4 +84,5 @@
 @media (max-width: 600px) {
   .footer { padding: 32px 24px; }
   .inner { flex-direction: column; align-items: flex-start; }
+  .ctaBtn { width: 100%; justify-content: center; }
 }

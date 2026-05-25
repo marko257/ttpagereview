@@ -266,10 +266,188 @@
   text-decoration: underline;
 }
 
+/* ─── Hero Card (Option D + C) ─── */
+.heroCard {
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+}
+
+.heroTop {
+  background: #1c1c1c;
+  padding: 28px 28px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.heroAvatarWrap { flex-shrink: 0; }
+
+.heroAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.15);
+  display: block;
+}
+
+.heroAvatarFallback {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0891B2, #3B8FF6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.heroInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.heroName {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.heroHandle {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  margin-top: 3px;
+}
+
+.heroScoreBlock {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.heroScoreNum {
+  font-size: 68px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.heroScoreLbl {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.35);
+  margin-top: 4px;
+}
+
+/* Stats row */
+.heroStats {
+  display: flex;
+  gap: 28px;
+  padding: 14px 28px;
+  background: #252525;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.heroStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.heroStatVal {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.heroStatLbl {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  font-weight: 500;
+}
+
+/* Bio */
+.heroBio {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 28px 14px;
+  background: #252525;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.heroBioText {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.heroBioLink {
+  font-size: 13px;
+  color: #60a5fa;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.heroBioLink:hover { text-decoration: underline; }
+
+/* Percentile bar */
+.heroPercentile {
+  background: var(--surface);
+  padding: 14px 28px 18px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.heroPercentileLbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.heroPercentileBar {
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.heroPercentileFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--blue), var(--green));
+  transition: width 1s var(--ease-out);
+}
+
+.heroPercentileNote {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 7px;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .nav { padding: 0 20px; }
   .main { padding: 32px 20px 48px; }
   .categoryGrid { grid-template-columns: 1fr; }
-  .displayName { font-size: 20px; }
+  .heroTop { padding: 20px; gap: 12px; }
+  .heroScoreNum { font-size: 52px; }
+  .heroStats { padding: 12px 20px; gap: 18px; flex-wrap: wrap; }
+  .heroBio { padding: 10px 20px 12px; }
+  .heroPercentile { padding: 12px 20px 16px; }
 }

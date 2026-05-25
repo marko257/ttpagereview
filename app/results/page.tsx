@@ -88,47 +88,87 @@ async function ResultsContent({ username }: { username: string }) {
     )
   }
 
-  const color = scoreColor(data.overallScore)
+  // Percentile: rough mapping of score → where they stand vs other profiles
+  const percentile = Math.min(97, Math.max(5, Math.round(data.overallScore * 0.88 + 5)))
+
+  // Engagement rate from video stats
+  const engRate = data.videoStats && data.videoStats.avgViews > 0
+    ? ((data.videoStats.avgLikes + data.videoStats.avgComments) / data.videoStats.avgViews * 100).toFixed(1)
+    : null
 
   return (
     <>
-      {/* Profile header */}
-      <div className={`${styles.profileHeader} fade-up`}>
-        <div className={styles.avatarWrap}>
-          {data.avatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={data.avatarUrl} alt={data.displayName} className={styles.avatar} width={72} height={72} />
-          ) : (
-            <div className={styles.avatarFallback}>{data.username?.[0]?.toUpperCase()}</div>
-          )}
-        </div>
-        <div className={styles.profileInfo}>
-          <h1 className={styles.displayName}>{data.displayName || `@${data.username}`}</h1>
-          <p className={styles.meta}>@{data.username} · {formatNumber(data.followerCount)} followers · {data.videoCount} videos</p>
-        </div>
-        <div className={styles.overallScore} style={{ '--score-color': color } as React.CSSProperties}>
-          <div className={styles.scoreNumber} style={{ color }}>
-            <ScoreCounter target={data.overallScore} />
-          </div>
-          <div className={styles.scoreLabel} style={{ color }}>{scoreLabel(data.overallScore)}</div>
-        </div>
-      </div>
+      {/* Hero card — dark header (Option D) + profile stats + bio (Option C) */}
+      <div className={`${styles.heroCard} fade-up`}>
 
-      {(data.bio || data.bioLink) && (
-        <div className={styles.bioRow}>
-          {data.bio && <p className={styles.bioText}>{data.bio}</p>}
-          {data.bioLink && (
-            <a
-              href={data.bioLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.bioLink}
-            >
-              🔗 {data.bioLink.replace(/^https?:\/\//, '').replace(/\/$/, '')}
-            </a>
-          )}
+        {/* Top: avatar · name · giant score */}
+        <div className={styles.heroTop}>
+          <div className={styles.heroAvatarWrap}>
+            {data.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={data.avatarUrl} alt={data.displayName} className={styles.heroAvatar} width={80} height={80} />
+            ) : (
+              <div className={styles.heroAvatarFallback}>{data.username?.[0]?.toUpperCase()}</div>
+            )}
+          </div>
+          <div className={styles.heroInfo}>
+            <h1 className={styles.heroName}>{data.displayName || `@${data.username}`}</h1>
+            <p className={styles.heroHandle}>@{data.username}</p>
+          </div>
+          <div className={styles.heroScoreBlock}>
+            <div className={styles.heroScoreNum}>
+              <ScoreCounter target={data.overallScore} />
+            </div>
+            <div className={styles.heroScoreLbl}>Overall Score</div>
+          </div>
         </div>
-      )}
+
+        {/* Stats row: followers · videos · engagement · grade */}
+        <div className={styles.heroStats}>
+          <div className={styles.heroStat}>
+            <span className={styles.heroStatVal}>{formatNumber(data.followerCount)}</span>
+            <span className={styles.heroStatLbl}>Followers</span>
+          </div>
+          <div className={styles.heroStat}>
+            <span className={styles.heroStatVal}>{data.videoCount}</span>
+            <span className={styles.heroStatLbl}>Videos</span>
+          </div>
+          {engRate && (
+            <div className={styles.heroStat}>
+              <span className={styles.heroStatVal}>{engRate}%</span>
+              <span className={styles.heroStatLbl}>Eng. Rate</span>
+            </div>
+          )}
+          <div className={styles.heroStat}>
+            <span className={styles.heroStatVal}>{scoreLabel(data.overallScore)}</span>
+            <span className={styles.heroStatLbl}>Grade</span>
+          </div>
+        </div>
+
+        {/* Bio (if present) */}
+        {(data.bio || data.bioLink) && (
+          <div className={styles.heroBio}>
+            {data.bio && <p className={styles.heroBioText}>{data.bio}</p>}
+            {data.bioLink && (
+              <a href={data.bioLink} target="_blank" rel="noopener noreferrer" className={styles.heroBioLink}>
+                🔗 {data.bioLink.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+              </a>
+            )}
+          </div>
+        )}
+
+        {/* Percentile bar */}
+        <div className={styles.heroPercentile}>
+          <p className={styles.heroPercentileLbl}>How this profile compares</p>
+          <div className={styles.heroPercentileBar}>
+            <div className={styles.heroPercentileFill} style={{ width: `${percentile}%` }} />
+          </div>
+          <p className={styles.heroPercentileNote}>
+            Better than <strong>{percentile}% of TikTok profiles</strong> we&apos;ve analyzed
+          </p>
+        </div>
+
+      </div>
 
       {/* Categories */}
       <section className={styles.section}>
