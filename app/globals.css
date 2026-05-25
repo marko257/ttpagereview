@@ -3,8 +3,12 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --yellow: #F5C800;
-  --black: #0a0a0a;
+  --blue: #3B8FF6;
+  --blue-dark: #2d7de8;
+  --blue-bg: #eff6ff;
+  --blue-border: #bfdbfe;
+  --black: #1c1c1c;
+  --black-deep: #0a0a0a;
   --white: #fafafa;
   --surface: #ffffff;
   --border: rgba(0,0,0,0.08);
@@ -40,18 +44,23 @@ input { font-family: var(--font); }
   transition: all 0.2s var(--ease-out);
   white-space: nowrap;
 }
-.btn-primary:hover { background: #1a1a1a; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.btn-primary:hover { background: #2a2a2a; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 .btn-primary:active { transform: scale(0.97) translateY(1px); }
 
-.btn-yellow {
+.btn-blue {
   display: inline-flex; align-items: center; gap: 6px;
-  background: var(--yellow); color: var(--black);
+  background: var(--blue); color: #fff;
   padding: 10px 22px; border-radius: 999px;
   font-size: 14px; font-weight: 700;
   transition: all 0.2s var(--ease-out);
   white-space: nowrap;
 }
-.btn-yellow:hover { filter: brightness(1.05); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(245,200,0,0.4); }
+.btn-blue:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,143,246,0.4); }
+.btn-blue:active { transform: scale(0.97) translateY(1px); }
+
+/* keep btn-yellow as alias for backward compat */
+.btn-yellow { display: inline-flex; align-items: center; gap: 6px; background: var(--blue); color: #fff; padding: 10px 22px; border-radius: 999px; font-size: 14px; font-weight: 700; transition: all 0.2s var(--ease-out); white-space: nowrap; }
+.btn-yellow:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,143,246,0.4); }
 .btn-yellow:active { transform: scale(0.97) translateY(1px); }
 
 @keyframes shimmer {

@@ -31,11 +31,11 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: var(--yellow);
+  background: var(--blue);
   border-radius: 8px;
   font-size: 18px;
   font-weight: 700;
-  color: var(--black);
+  color: #fff;
 }
 
 .logoText {

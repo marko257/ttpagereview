@@ -27,8 +27,8 @@
 }
 
 .logoMark {
-  background: var(--yellow);
-  color: var(--black);
+  background: var(--blue);
+  color: #fff;
   font-size: 11px;
   font-weight: 700;
   padding: 4px 8px;

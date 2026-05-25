@@ -32,7 +32,7 @@ export default function UsernameInput() {
           disabled={loading}
         />
       </div>
-      <button type="submit" className="btn-primary" disabled={loading || !value.trim()}>
+      <button type="submit" className="btn-blue" disabled={loading || !value.trim()}>
         {loading ? 'Loading…' : 'Analyze →'}
       </button>
     </form>

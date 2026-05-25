@@ -1,0 +1,111 @@
+<h2>What should the report look like?</h2>
+<p class="subtitle">How should we present the profile review results?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f0f0f;padding:16px;font-family:sans-serif;">
+      <div style="background:#1a1a1a;border-radius:12px;padding:16px;border:1px solid #333;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="width:48px;height:48px;border-radius:50%;background:#333;"></div>
+          <div>
+            <div style="color:#fff;font-weight:700;font-size:14px;">@username</div>
+            <div style="color:#888;font-size:12px;">TikTok Profile Review</div>
+          </div>
+          <div style="margin-left:auto;background:#22c55e;color:#000;border-radius:20px;padding:4px 12px;font-weight:700;font-size:14px;">72 / 100</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:#222;border-radius:8px;padding:10px;">
+            <div style="color:#888;font-size:10px;margin-bottom:4px;">PROFILE PHOTO</div>
+            <div style="color:#22c55e;font-size:12px;">✓ Face visible</div>
+          </div>
+          <div style="background:#222;border-radius:8px;padding:10px;">
+            <div style="color:#888;font-size:10px;margin-bottom:4px;">USERNAME</div>
+            <div style="color:#ef4444;font-size:12px;">✗ Too many numbers</div>
+          </div>
+          <div style="background:#222;border-radius:8px;padding:10px;">
+            <div style="color:#888;font-size:10px;margin-bottom:4px;">BIO</div>
+            <div style="color:#f59e0b;font-size:12px;">~ Missing schedule</div>
+          </div>
+          <div style="background:#222;border-radius:8px;padding:10px;">
+            <div style="color:#888;font-size:10px;margin-bottom:4px;">VIDEO GRID</div>
+            <div style="color:#ef4444;font-size:12px;">✗ Inconsistent</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Scorecard</h3>
+      <p>Numeric score (0–100) with category breakdowns. Clean, at-a-glance summary. Good for sharing.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f0f0f;padding:16px;font-family:sans-serif;">
+      <div style="background:#1a1a1a;border-radius:12px;padding:16px;border:1px solid #333;">
+        <div style="color:#fff;font-weight:700;font-size:13px;margin-bottom:12px;">3 Things to Fix Right Now</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:#2a1515;border-left:3px solid #ef4444;border-radius:6px;padding:10px;">
+            <div style="color:#ef4444;font-size:11px;font-weight:700;">HIGH PRIORITY</div>
+            <div style="color:#fff;font-size:12px;margin-top:2px;">Your bio has no stream schedule — you're losing followers every profile visit</div>
+          </div>
+          <div style="background:#2a2215;border-left:3px solid #f59e0b;border-radius:6px;padding:10px;">
+            <div style="color:#f59e0b;font-size:11px;font-weight:700;">MEDIUM</div>
+            <div style="color:#fff;font-size:12px;margin-top:2px;">Logo profile pic is forgettable — show your face</div>
+          </div>
+          <div style="background:#151a15;border-left:3px solid #22c55e;border-radius:6px;padding:10px;">
+            <div style="color:#22c55e;font-size:11px;font-weight:700;">QUICK WIN</div>
+            <div style="color:#fff;font-size:12px;margin-top:2px;">Add cover art to your videos — your grid looks unintentional</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Priority Fixes</h3>
+      <p>No score. Focused list of what to fix, ordered by impact. More actionable, less gameable.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f0f0f;padding:16px;font-family:sans-serif;">
+      <div style="background:#1a1a1a;border-radius:12px;padding:16px;border:1px solid #333;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div style="width:48px;height:48px;border-radius:50%;background:#333;"></div>
+          <div>
+            <div style="color:#fff;font-weight:700;font-size:14px;">@username</div>
+            <div style="color:#888;font-size:11px;">1.2K followers · 48 videos</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:80px;color:#888;font-size:11px;">Profile Photo</div>
+            <div style="flex:1;background:#333;border-radius:4px;height:6px;overflow:hidden;">
+              <div style="width:90%;background:#22c55e;height:100%;border-radius:4px;"></div>
+            </div>
+            <div style="color:#22c55e;font-size:11px;width:24px;">90</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:80px;color:#888;font-size:11px;">Bio</div>
+            <div style="flex:1;background:#333;border-radius:4px;height:6px;overflow:hidden;">
+              <div style="width:40%;background:#f59e0b;height:100%;border-radius:4px;"></div>
+            </div>
+            <div style="color:#f59e0b;font-size:11px;width:24px;">40</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:80px;color:#888;font-size:11px;">Content</div>
+            <div style="flex:1;background:#333;border-radius:4px;height:6px;overflow:hidden;">
+              <div style="width:60%;background:#f59e0b;height:100%;border-radius:4px;"></div>
+            </div>
+            <div style="color:#f59e0b;font-size:11px;width:24px;">60</div>
+          </div>
+        </div>
+        <div style="color:#888;font-size:11px;border-top:1px solid #333;padding-top:10px;">Your bio is the weakest point. Fix it first.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Score + Detail</h3>
+      <p>Progress bars per category + score + a single most-important callout. Combines both approaches.</p>
+    </div>
+  </div>
+
+</div>
