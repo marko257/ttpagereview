@@ -25,6 +25,8 @@ async function getAnalysis(username: string) {
       avatarUrl: profile.avatarUrl,
       followerCount: profile.followerCount,
       videoCount: profile.videoCount,
+      bio: profile.signature || '',
+      bioLink: profile.bioLink || '',
       ...scores,
     }
   } catch (err: unknown) {
@@ -108,11 +110,27 @@ async function ResultsContent({ username }: { username: string }) {
         </div>
       </div>
 
+      {(data.bio || data.bioLink) && (
+        <div className={styles.bioRow}>
+          {data.bio && <p className={styles.bioText}>{data.bio}</p>}
+          {data.bioLink && (
+            <a
+              href={data.bioLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.bioLink}
+            >
+              🔗 {data.bioLink.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+            </a>
+          )}
+        </div>
+      )}
+
       {/* Categories */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Profile Breakdown</h2>
         <div className={styles.categoryGrid}>
-          {data.categories?.map((cat: { id: string; label: string; score: number; status: 'pass' | 'partial' | 'fail'; feedback: string }, i: number) => (
+          {data.categories?.map((cat: { id: string; label: string; score: number; status: 'pass' | 'partial' | 'fail'; feedback: string; details?: string[] }, i: number) => (
             <CategoryCard key={cat.id} {...cat} index={i} />
           ))}
         </div>

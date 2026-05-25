@@ -212,6 +212,39 @@
   border-radius: 16px;
 }
 
+/* Bio row */
+.bioRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 40px;
+  padding: 16px 20px;
+  background: #f8f9fb;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.bioText {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.bioLink {
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bioLink:hover {
+  text-decoration: underline;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .nav { padding: 0 20px; }

@@ -8,6 +8,13 @@ export interface CategoryScore {
   score: number
   status: 'pass' | 'partial' | 'fail'
   feedback: string
+  details?: string[]
+}
+
+function formatNum(n: number): string {
+  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`
+  return n.toString()
 }
 
 export interface PriorityFix {
@@ -51,7 +58,18 @@ function scoreUsername(username: string): CategoryScore {
   }
 
   const status = statusFromScore(score)
-  return { id: 'username', label: 'Username', score, status, feedback: feedbackMap[status] }
+  return {
+    id: 'username',
+    label: 'Username',
+    score,
+    status,
+    feedback: feedbackMap[status],
+    details: [
+      `${username.length} characters`,
+      numCount > 0 ? `${numCount} number${numCount > 1 ? 's' : ''} in name` : 'No numbers',
+      underscoreCount > 0 ? `${underscoreCount} underscore${underscoreCount > 1 ? 's' : ''}` : 'No underscores',
+    ],
+  }
 }
 
 function scoreBio(profile: TikTokProfile): CategoryScore {
@@ -74,12 +92,23 @@ function scoreBio(profile: TikTokProfile): CategoryScore {
   }
 
   const status = statusFromScore(score)
-  return { id: 'bio', label: 'Bio', score, status, feedback: feedbackMap[status] }
+  return {
+    id: 'bio',
+    label: 'Bio',
+    score,
+    status,
+    feedback: feedbackMap[status],
+    details: [
+      bioLen === 0 ? 'Bio is empty' : `${bioLen} characters`,
+      hasLink ? 'Link in bio ✓' : 'No link',
+      hasSchedule ? 'Schedule mentioned ✓' : 'No schedule',
+    ],
+  }
 }
 
 function scoreVideoGrid(videos: TikTokVideo[]): CategoryScore {
   if (!videos.length) {
-    return { id: 'videoGrid', label: 'Video Grid', score: 20, status: 'fail', feedback: 'No videos found. Post consistently to build your grid.' }
+    return { id: 'videoGrid', label: 'Video Grid', score: 20, status: 'fail', feedback: 'No videos found. Post consistently to build your grid.', details: ['0 videos found', 'Need 2+ for analysis'] }
   }
 
   // Check cover art consistency (non-empty cover URLs distinct from origin)
@@ -110,10 +139,22 @@ function scoreVideoGrid(videos: TikTokVideo[]): CategoryScore {
       partial: nicheScore < 25 ? 'Content feels scattered — tighten your niche.' : 'Good posting but cover art is inconsistent.',
       fail: 'Grid lacks consistency in niche or posting frequency.',
     }
-    return { id: 'videoGrid', label: 'Video Grid', score: total, status, feedback: feedbacks[status] }
+    const videosPerWeekDisplay = videosPerWeek.toFixed(1)
+    return {
+      id: 'videoGrid',
+      label: 'Video Grid',
+      score: total,
+      status,
+      feedback: feedbacks[status],
+      details: [
+        `${videosPerWeekDisplay} videos/week avg`,
+        `${Math.round(hasCoverArt * 100)}% have cover art`,
+        topHashtags.length > 0 ? `Top tag: #${topHashtags[0][0]}` : 'No hashtags found',
+      ],
+    }
   }
 
-  return { id: 'videoGrid', label: 'Video Grid', score: 20, status: 'fail', feedback: 'Not enough videos to evaluate grid consistency.' }
+  return { id: 'videoGrid', label: 'Video Grid', score: 20, status: 'fail', feedback: 'Not enough videos to evaluate grid consistency.', details: [`${videos.length} videos found`, 'Need 2+ for analysis'] }
 }
 
 function scoreEngagement(videos: TikTokVideo[]): CategoryScore {
@@ -121,13 +162,15 @@ function scoreEngagement(videos: TikTokVideo[]): CategoryScore {
     return { id: 'engagementRate', label: 'Engagement Rate', score: 20, status: 'fail', feedback: 'No video data available to calculate engagement.' }
   }
 
-  const rates = videos
-    .filter(v => v.stats.playCount > 0)
-    .map(v => (v.stats.likeCount + v.stats.commentCount) / v.stats.playCount)
+  const filtered = videos.filter(v => v.stats.playCount > 0)
 
-  if (!rates.length) {
+  if (!filtered.length) {
     return { id: 'engagementRate', label: 'Engagement Rate', score: 30, status: 'fail', feedback: 'Could not calculate engagement rate from available data.' }
   }
+
+  const rates = filtered.map(v => (v.stats.likeCount + v.stats.commentCount) / v.stats.playCount)
+  const avgViews = Math.round(filtered.reduce((s, v) => s + v.stats.playCount, 0) / filtered.length)
+  const avgLikes = Math.round(filtered.reduce((s, v) => s + v.stats.likeCount, 0) / filtered.length)
 
   const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length
   const pct = avgRate * 100
@@ -146,7 +189,18 @@ function scoreEngagement(videos: TikTokVideo[]): CategoryScore {
     fail: `${rateDisplay} engagement is below average. Focus on hooks and CTAs.`,
   }
 
-  return { id: 'engagementRate', label: 'Engagement Rate', score, status, feedback: feedbacks[status] }
+  return {
+    id: 'engagementRate',
+    label: 'Engagement Rate',
+    score,
+    status,
+    feedback: feedbacks[status],
+    details: [
+      `Avg ${formatNum(avgViews)} views/video`,
+      `Avg ${formatNum(avgLikes)} likes/video`,
+      `Based on ${filtered.length} videos`,
+    ],
+  }
 }
 
 function scorePostingConsistency(videos: TikTokVideo[]): CategoryScore {
@@ -197,7 +251,24 @@ function scorePostingConsistency(videos: TikTokVideo[]): CategoryScore {
     feedback = `Posting every ${avgGap.toFixed(0)} days on average. The algorithm rewards daily creators.`
   }
 
-  return { id: 'postingConsistency', label: 'Posting Consistency', score, status, feedback }
+  const lastPostText = daysSinceLastPost < 1
+    ? 'Last post: today'
+    : daysSinceLastPost < 2
+      ? 'Last post: yesterday'
+      : `Last post: ${Math.round(daysSinceLastPost)}d ago`
+
+  return {
+    id: 'postingConsistency',
+    label: 'Posting Consistency',
+    score,
+    status,
+    feedback,
+    details: [
+      lastPostText,
+      `Avg gap: ${avgGap.toFixed(1)} days`,
+      `${timestamps.length} videos analyzed`,
+    ],
+  }
 }
 
 export function computeScores(
@@ -230,6 +301,13 @@ export function computeScores(
     score: effectivePhotoScore,
     status: statusFromScore(effectivePhotoScore),
     feedback: photoFeedback,
+    details: isUnanalyzed
+      ? ['Estimated — add OpenAI key for AI analysis']
+      : effectivePhotoScore >= 70
+        ? ['Face detected ✓', 'AI-analyzed']
+        : effectivePhotoScore >= 40
+          ? ['Partial face detected', 'AI-analyzed']
+          : ['No face detected', 'AI-analyzed'],
   }
 
   const categories: CategoryScore[] = [
