@@ -11,30 +11,49 @@ function fmt(n: number): string {
   return n.toLocaleString()
 }
 
-const stats = [
-  { key: 'avgViews',    label: 'Avg Views',     icon: '👁',  description: 'per video' },
-  { key: 'avgLikes',    label: 'Avg Likes',     icon: '❤️',  description: 'per video' },
-  { key: 'avgComments', label: 'Avg Comments',  icon: '💬',  description: 'per video' },
-  { key: 'avgShares',   label: 'Avg Shares',    icon: '↗️',  description: 'per video' },
-  { key: 'avgSaves',    label: 'Avg Saves',     icon: '🔖',  description: 'per video' },
-] as const
+const stats: Array<{
+  key: keyof Omit<VideoStats, 'videosAnalyzed'>
+  label: string
+  icon: string
+  highlight?: boolean
+}> = [
+  { key: 'avgViews',    label: 'Avg Views',    icon: '👁'  },
+  { key: 'avgLikes',    label: 'Avg Likes',    icon: '❤️'  },
+  { key: 'avgComments', label: 'Avg Comments', icon: '💬'  },
+  { key: 'avgShares',   label: 'Avg Shares',   icon: '↗️',  highlight: true },
+  { key: 'avgSaves',    label: 'Avg Saves',    icon: '🔖',  highlight: true },
+]
 
 export default function VideoStatsGrid({ data }: Props) {
   return (
     <div className={styles.wrap}>
+      {/* Callout banner */}
+      <div className={styles.callout}>
+        <span className={styles.calloutIcon}>⭐</span>
+        <span>
+          <strong>Shares and saves are the most powerful signals</strong> — they tell the algorithm your content is worth pushing to new audiences. Focus on content that makes people want to send it or bookmark it.
+        </span>
+      </div>
+
       <div className={styles.grid}>
-        {stats.map(({ key, label, icon, description }) => {
+        {stats.map(({ key, label, icon, highlight }) => {
           const value = data[key]
           return (
-            <div key={key} className={styles.card}>
+            <div key={key} className={`${styles.card} ${highlight ? styles.cardHighlight : ''}`}>
+              {highlight && (
+                <span className={styles.keyBadge}>KEY METRIC</span>
+              )}
               <span className={styles.icon}>{icon}</span>
-              <span className={styles.value}>{fmt(value)}</span>
+              <span className={`${styles.value} ${highlight ? styles.valueHighlight : ''}`}>
+                {fmt(value)}
+              </span>
               <span className={styles.label}>{label}</span>
-              <span className={styles.desc}>{description}</span>
+              <span className={styles.desc}>per video</span>
             </div>
           )
         })}
       </div>
+
       <p className={styles.footnote}>Based on {data.videosAnalyzed} most recent videos</p>
     </div>
   )
