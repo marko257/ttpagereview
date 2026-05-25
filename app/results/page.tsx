@@ -8,6 +8,7 @@ import { fetchProfile, fetchVideos } from '@/lib/tiktok'
 import { scoreProfilePhoto } from '@/lib/vision'
 import { computeScores } from '@/lib/scoring'
 import ShareButton from '@/components/ShareButton'
+import HashtagAnalysis from '@/components/HashtagAnalysis'
 import styles from './page.module.css'
 
 async function getAnalysis(username: string) {
@@ -136,6 +137,14 @@ async function ResultsContent({ username }: { username: string }) {
           ))}
         </div>
       </section>
+
+      {/* Video Analysis — Hashtags */}
+      {data.hashtagAnalysis && (
+        <section className={`${styles.section} fade-up`} style={{ '--delay': '200ms' } as React.CSSProperties}>
+          <h2 className={styles.sectionTitle}>Video Analysis</h2>
+          <HashtagAnalysis data={data.hashtagAnalysis} />
+        </section>
+      )}
 
       {/* Priority Fixes */}
       {data.priorityFixes?.length > 0 && (

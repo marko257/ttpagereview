@@ -23,10 +23,23 @@ export interface PriorityFix {
   description: string
 }
 
+export interface HashtagEntry {
+  tag: string
+  count: number
+}
+
+export interface HashtagAnalysis {
+  genericTags: HashtagEntry[]   // lazy/generic tags the creator overuses
+  nicheTags: HashtagEntry[]     // specific niche tags (good signal)
+  totalUnique: number
+  genericRatio: number          // 0–1: fraction of total hashtag uses that are generic
+}
+
 export interface ScoreResult {
   overallScore: number
   categories: CategoryScore[]
   priorityFixes: PriorityFix[]
+  hashtagAnalysis: HashtagAnalysis
 }
 
 function statusFromScore(score: number): 'pass' | 'partial' | 'fail' {
@@ -386,5 +399,38 @@ export function computeScores(
     }
   })
 
-  return { overallScore, categories, priorityFixes }
+  // Hashtag analysis
+  const GENERIC_TAGS = new Set([
+    'fyp', 'foryou', 'foryoupage', 'fypシ', 'viral', 'trending', 'xyzbca',
+    'explore', '4u', 'foryourpage', 'tiktokviral', 'viralvideo', 'tiktok',
+    'goviral', 'blowup', 'blowthisup', 'fyppp', 'fypage', 'parati', 'pourtoi',
+  ])
+
+  const allTags = videos.flatMap(v => v.hashtags)
+  const tagCounts: Record<string, number> = {}
+  allTags.forEach(tag => { tagCounts[tag] = (tagCounts[tag] || 0) + 1 })
+
+  const genericTags: HashtagEntry[] = []
+  const nicheTags: HashtagEntry[] = []
+
+  Object.entries(tagCounts)
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([tag, count]) => {
+      if (GENERIC_TAGS.has(tag)) {
+        genericTags.push({ tag, count })
+      } else {
+        nicheTags.push({ tag, count })
+      }
+    })
+
+  const totalUses = allTags.length
+  const genericUses = genericTags.reduce((s, e) => s + e.count, 0)
+  const hashtagAnalysis: HashtagAnalysis = {
+    genericTags: genericTags.slice(0, 8),
+    nicheTags: nicheTags.slice(0, 12),
+    totalUnique: Object.keys(tagCounts).length,
+    genericRatio: totalUses > 0 ? genericUses / totalUses : 0,
+  }
+
+  return { overallScore, categories, priorityFixes, hashtagAnalysis }
 }
