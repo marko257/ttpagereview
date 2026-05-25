@@ -1,8 +1,11 @@
 // lib/vision.ts
 import OpenAI from 'openai'
 
+// Returned when we can't analyze the photo — neutral, no penalizing feedback
+export const PHOTO_SCORE_UNANALYZED = -1
+
 export async function scoreProfilePhoto(imageUrl: string): Promise<number> {
-  if (!process.env.OPENAI_API_KEY || !imageUrl) return 50
+  if (!process.env.OPENAI_API_KEY || !imageUrl) return PHOTO_SCORE_UNANALYZED
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
   try {
@@ -28,8 +31,8 @@ export async function scoreProfilePhoto(imageUrl: string): Promise<number> {
 
     const text = response.choices[0]?.message?.content?.trim() || '50'
     const score = parseInt(text, 10)
-    return isNaN(score) ? 50 : Math.max(0, Math.min(100, score))
+    return isNaN(score) ? PHOTO_SCORE_UNANALYZED : Math.max(0, Math.min(100, score))
   } catch {
-    return 50
+    return PHOTO_SCORE_UNANALYZED
   }
 }

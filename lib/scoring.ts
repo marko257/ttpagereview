@@ -1,5 +1,6 @@
 // lib/scoring.ts
 import type { TikTokProfile, TikTokVideo } from './tiktok'
+import { PHOTO_SCORE_UNANALYZED } from './vision'
 
 export interface CategoryScore {
   id: string
@@ -153,28 +154,50 @@ function scorePostingConsistency(videos: TikTokVideo[]): CategoryScore {
     return { id: 'postingConsistency', label: 'Posting Consistency', score: 20, status: 'fail', feedback: 'Not enough videos to evaluate posting frequency.' }
   }
 
-  const timestamps = videos.map(v => v.createTime).sort((a, b) => b - a)
+  const nowSec = Date.now() / 1000
+  const timestamps = videos.map(v => v.createTime).filter(t => t > 0).sort((a, b) => b - a)
+
+  if (timestamps.length < 3) {
+    return { id: 'postingConsistency', label: 'Posting Consistency', score: 20, status: 'fail', feedback: 'Not enough timestamp data to evaluate posting frequency.' }
+  }
+
+  // How long since the last post (days)
+  const daysSinceLastPost = (nowSec - timestamps[0]) / (24 * 60 * 60)
+
+  // Average gap between posts (days)
   const gaps: number[] = []
   for (let i = 0; i < timestamps.length - 1; i++) {
     gaps.push((timestamps[i] - timestamps[i + 1]) / (24 * 60 * 60))
   }
-
   const avgGap = gaps.reduce((a, b) => a + b, 0) / gaps.length
 
+  // Base score from average gap
   let score = 10
   if (avgGap <= 3) score = 100
   else if (avgGap <= 7) score = 75
   else if (avgGap <= 14) score = 50
   else if (avgGap <= 30) score = 25
 
+  // Penalize heavily if last post was recent — inactive period overrides historic pattern
+  if (daysSinceLastPost > 60) score = Math.min(score, 10)
+  else if (daysSinceLastPost > 30) score = Math.min(score, 20)
+  else if (daysSinceLastPost > 14) score = Math.min(score, 40)
+
   const status = statusFromScore(score)
-  const feedbacks: Record<string, string> = {
-    pass: `Posting every ${avgGap.toFixed(0)} days — algorithm-friendly consistency.`,
-    partial: `Posting every ${avgGap.toFixed(0)} days. Aim for every 2–3 days.`,
-    fail: `${avgGap.toFixed(0)}-day gaps between posts. The algorithm rewards daily creators.`,
+
+  // Build feedback that reflects both recency and cadence
+  let feedback: string
+  if (daysSinceLastPost > 30) {
+    feedback = `Last post was ${Math.round(daysSinceLastPost)} days ago. Going dark kills algorithm momentum.`
+  } else if (score >= 70) {
+    feedback = `Posting every ${avgGap.toFixed(0)} days — algorithm-friendly consistency.`
+  } else if (score >= 40) {
+    feedback = `Posting every ${avgGap.toFixed(0)} days on average. Aim for every 2–3 days.`
+  } else {
+    feedback = `Posting every ${avgGap.toFixed(0)} days on average. The algorithm rewards daily creators.`
   }
 
-  return { id: 'postingConsistency', label: 'Posting Consistency', score, status, feedback: feedbacks[status] }
+  return { id: 'postingConsistency', label: 'Posting Consistency', score, status, feedback }
 }
 
 export function computeScores(
@@ -191,12 +214,21 @@ export function computeScores(
     postingConsistency: 0.10,
   }
 
-  const photoFeedback = photoScore >= 70 ? 'Great — your face is front and center.' : photoScore >= 40 ? 'Face partially visible. Get closer and more centered.' : 'No face detected. Creators with face photos get 3x more followers.'
+  // -1 = no API key set, can't analyze — show neutral score/feedback, don't penalize
+  const isUnanalyzed = photoScore === PHOTO_SCORE_UNANALYZED
+  const effectivePhotoScore = isUnanalyzed ? 70 : photoScore
+  const photoFeedback = isUnanalyzed
+    ? 'Photo analysis requires an OpenAI API key. Score estimated based on profile presence.'
+    : effectivePhotoScore >= 70
+      ? 'Great — your face is front and center.'
+      : effectivePhotoScore >= 40
+        ? 'Face partially visible. Get closer and more centered.'
+        : 'No face detected. Creators with face photos get 3x more followers.'
   const photoCategory: CategoryScore = {
     id: 'profilePhoto',
     label: 'Profile Photo',
-    score: photoScore,
-    status: statusFromScore(photoScore),
+    score: effectivePhotoScore,
+    status: statusFromScore(effectivePhotoScore),
     feedback: photoFeedback,
   }
 

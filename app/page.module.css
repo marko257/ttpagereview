@@ -145,6 +145,37 @@
   flex-shrink: 0;
 }
 
+.previewAvatarTC {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #0891B2;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.previewFixes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.previewFix {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid;
+}
+
 .previewName {
   font-size: 14px;
   font-weight: 700;
@@ -162,7 +193,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--blue);
+  background: #3B8FF6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -256,4 +287,149 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* How it works */
+.howItWorks {
+  background: #f8f9fb;
+  padding: 96px 40px;
+  border-top: 1px solid var(--border);
+}
+
+.howInner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.howEyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+
+.howTitle {
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--black);
+  margin-bottom: 48px;
+  line-height: 1.15;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stepNum {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: 0.06em;
+}
+
+.stepTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.stepDesc {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.65;
+}
+
+/* What gets scored */
+.scored {
+  padding: 96px 40px;
+  border-top: 1px solid var(--border);
+}
+
+.scoredInner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.scoredGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.scoredCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  transition: box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+.scoredCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+
+.scoredIcon {
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.scoredContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scoredHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.scoredLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--black);
+}
+
+.scoredWeight {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--blue);
+  background: var(--blue-bg);
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.scoredDesc {
+  font-size: 13px;
+  color: #4b5563;
+  line-height: 1.55;
+}
+
+@media (max-width: 768px) {
+  .howItWorks, .scored { padding: 64px 24px; }
+  .steps { grid-template-columns: 1fr; gap: 24px; }
+  .scoredGrid { grid-template-columns: 1fr; }
 }
