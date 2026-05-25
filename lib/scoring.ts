@@ -113,31 +113,57 @@ function scoreBio(profile: TikTokProfile): CategoryScore {
   const bio = profile.signature
   const hasLink = !!profile.bioLink
   const bioLen = bio.length
-  const scheduleWords = ['stream', 'live', 'daily', 'weekly', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'pm', 'am', 'est', 'pst', 'cst']
-  const hasSchedule = scheduleWords.some(w => bio.toLowerCase().includes(w))
-  const hasCTA = bio.includes('!') || bio.toLowerCase().includes('follow') || bio.toLowerCase().includes('join') || bio.toLowerCase().includes('watch')
+
+  // Use precise regex patterns to avoid false positives.
+  // Word-list approach caused: 'live' matching "TikTok Live creator",
+  // 'am'/'pm' matching "gaming"/"I am a creator", 'stream' matching "streamer".
+  const schedulePatterns = [
+    /\d{1,2}(:\d{2})?\s*(am|pm)/i,          // "7pm", "8:30am", "9:00 PM"
+    /\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i,
+    /\b(est|pst|cst|mst|gmt|utc)\b/i,       // timezone as a whole word only
+    /\bschedule\b/i,
+    /\bdaily\b|\bweekly\b|\bweekdays\b|\bweekends\b/i,
+  ]
+  const hasSchedule = schedulePatterns.some(p => p.test(bio))
+  const hasCTA = bio.includes('!') || /\b(follow|join|watch|subscribe|click|check out|link)\b/i.test(bio)
 
   let score = 20
   if (bioLen >= 10) score = 50
   if (bioLen >= 10 && (hasLink || hasCTA)) score = 70
   if (bioLen >= 10 && (hasLink || hasCTA) && hasSchedule) score = 100
 
-  const feedbackMap: Record<string, string> = {
-    pass: 'Great bio — clear, has a call-to-action, and a schedule.',
-    partial: hasLink || hasCTA ? 'Good start. Adding a stream schedule would boost conversions.' : 'Has content but missing a clear CTA or link.',
-    fail: 'Bio is empty or too short. This is prime real estate — use it.',
+  const status = statusFromScore(score)
+
+  // Build feedback dynamically from what was actually detected
+  let feedback: string
+  if (status === 'pass') {
+    const parts: string[] = []
+    if (hasCTA) parts.push('has a call-to-action')
+    if (hasSchedule) parts.push('includes a schedule')
+    if (hasLink) parts.push('has a link')
+    feedback = parts.length > 0
+      ? `Great bio — ${parts.join(', ')}.`
+      : 'Great bio — clear and well-written.'
+  } else if (status === 'partial') {
+    if (!hasSchedule && (hasLink || hasCTA)) {
+      feedback = 'Good start. Adding a stream schedule would boost conversions.'
+    } else {
+      feedback = 'Has content but missing a clear CTA or link.'
+    }
+  } else {
+    feedback = 'Bio is empty or too short. This is prime real estate — use it.'
   }
 
-  const status = statusFromScore(score)
   return {
     id: 'bio',
     label: 'Bio',
     score,
     status,
-    feedback: feedbackMap[status],
+    feedback,
     details: [
       bioLen === 0 ? 'Bio is empty' : `${bioLen} characters`,
       hasLink ? 'Link in bio ✓' : 'No link',
+      hasCTA ? 'Call-to-action ✓' : 'No CTA detected',
       hasSchedule ? 'Schedule mentioned ✓' : 'No schedule',
     ],
   }
