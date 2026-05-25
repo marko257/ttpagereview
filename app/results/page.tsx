@@ -133,7 +133,7 @@ async function ResultsContent({ username }: { username: string }) {
       {/* Video Stats */}
       {data.videoStats && (
         <section className={`${styles.section} fade-up`} style={{ '--delay': '80ms' } as React.CSSProperties}>
-          <h2 className={styles.sectionTitle}>Video Performance</h2>
+          <h2 className={styles.sectionTitle}>Post Performance</h2>
           <VideoStatsGrid data={data.videoStats} />
         </section>
       )}
