@@ -81,12 +81,12 @@ function scoreVideoGrid(videos: TikTokVideo[]): CategoryScore {
     return { id: 'videoGrid', label: 'Video Grid', score: 20, status: 'fail', feedback: 'No videos found. Post consistently to build your grid.' }
   }
 
-  // Check cover art consistency (non-empty cover URLs)
-  const hasCoverArt = videos.filter(v => v.video.cover && v.video.cover !== v.video.originCover).length / videos.length
+  // Check cover art consistency (non-empty cover URLs distinct from origin)
+  const hasCoverArt = videos.filter(v => v.cover && v.cover !== v.originCover).length / videos.length
   const coverScore = hasCoverArt > 0.8 ? 30 : hasCoverArt > 0.5 ? 20 : 0
 
   // Check niche consistency via hashtag overlap
-  const allHashtags = videos.flatMap(v => v.textExtra.map(t => t.hashtagName.toLowerCase()))
+  const allHashtags = videos.flatMap(v => v.hashtags)
   const hashtagCounts: Record<string, number> = {}
   allHashtags.forEach(h => { hashtagCounts[h] = (hashtagCounts[h] || 0) + 1 })
   const topHashtags = Object.entries(hashtagCounts).sort((a, b) => b[1] - a[1]).slice(0, 5)

@@ -1,10 +1,16 @@
 // lib/tiktok.ts
-const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY!
-const RAPIDAPI_HOST = 'tiktok-api23.p.rapidapi.com'
+// API: tiktok-scraper7.p.rapidapi.com
+// /user/info?unique_id=  → { code, data: { user: {...}, stats: {...} } }
+// /user/posts?unique_id=&count= → { code, data: { videos: [...], cursor, hasMore } }
 
-const headers = {
-  'x-rapidapi-key': RAPIDAPI_KEY,
-  'x-rapidapi-host': RAPIDAPI_HOST,
+const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY!
+const RAPIDAPI_HOST = 'tiktok-scraper7.p.rapidapi.com'
+
+function getHeaders() {
+  return {
+    'x-rapidapi-key': RAPIDAPI_KEY,
+    'x-rapidapi-host': RAPIDAPI_HOST,
+  }
 }
 
 export interface TikTokProfile {
@@ -14,7 +20,7 @@ export interface TikTokProfile {
   followerCount: number
   videoCount: number
   bioLink: string
-  signature: string // bio text
+  signature: string
 }
 
 export interface TikTokVideo {
@@ -27,16 +33,14 @@ export interface TikTokVideo {
     commentCount: number
     shareCount: number
   }
-  video: {
-    cover: string
-    originCover: string
-  }
-  textExtra: Array<{ hashtagName: string }>
+  cover: string
+  originCover: string
+  hashtags: string[]
 }
 
 export async function fetchProfile(username: string): Promise<TikTokProfile> {
-  const url = `https://${RAPIDAPI_HOST}/api/user/info?uniqueId=${encodeURIComponent(username)}`
-  const res = await fetch(url, { headers, next: { revalidate: 60 } })
+  const url = `https://${RAPIDAPI_HOST}/user/info?unique_id=${encodeURIComponent(username)}`
+  const res = await fetch(url, { headers: getHeaders(), next: { revalidate: 60 } })
 
   if (!res.ok) {
     if (res.status === 404) throw new Error('user_not_found')
@@ -45,16 +49,17 @@ export async function fetchProfile(username: string): Promise<TikTokProfile> {
 
   const data = await res.json()
 
-  // Handle different response shapes from the API
-  const user = data?.userInfo?.user || data?.data?.user || data?.user
-  const stats = data?.userInfo?.stats || data?.data?.stats || data?.stats
+  if (data.code !== 0) throw new Error('user_not_found')
+
+  const user = data.data?.user
+  const stats = data.data?.stats
 
   if (!user) throw new Error('user_not_found')
 
   return {
     uniqueId: user.uniqueId,
     nickname: user.nickname,
-    avatarUrl: user.avatarMedium || user.avatarThumb || user.avatarLarger,
+    avatarUrl: user.avatarMedium || user.avatarThumb || user.avatarLarger || '',
     followerCount: stats?.followerCount || 0,
     videoCount: stats?.videoCount || 0,
     bioLink: user.bioLink?.link || '',
@@ -63,28 +68,37 @@ export async function fetchProfile(username: string): Promise<TikTokProfile> {
 }
 
 export async function fetchVideos(username: string, count = 20): Promise<TikTokVideo[]> {
-  const url = `https://${RAPIDAPI_HOST}/api/user/posts?uniqueId=${encodeURIComponent(username)}&count=${count}`
-  const res = await fetch(url, { headers, next: { revalidate: 60 } })
+  const url = `https://${RAPIDAPI_HOST}/user/posts?unique_id=${encodeURIComponent(username)}&count=${count}`
+  const res = await fetch(url, { headers: getHeaders(), next: { revalidate: 60 } })
 
   if (!res.ok) return []
 
   const data = await res.json()
-  const items = data?.data?.itemList || data?.itemList || data?.data || []
+  const videos: unknown[] = data?.data?.videos || []
 
-  return Array.isArray(items) ? items.slice(0, count).map((item: any) => ({
-    id: item.id,
-    desc: item.desc || '',
-    createTime: item.createTime,
-    stats: {
-      playCount: item.stats?.playCount || 0,
-      likeCount: item.stats?.diggCount || item.stats?.likeCount || 0,
-      commentCount: item.stats?.commentCount || 0,
-      shareCount: item.stats?.shareCount || 0,
-    },
-    video: {
-      cover: item.video?.cover || '',
-      originCover: item.video?.originCover || '',
-    },
-    textExtra: item.textExtra || [],
-  })) : []
+  if (!Array.isArray(videos)) return []
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return videos.slice(0, count).map((v: any) => {
+    // Extract hashtags from title string (e.g. "#fyp #gaming")
+    const hashtags: string[] = []
+    const title: string = v.title || v.content_desc || ''
+    const matches = title.match(/#\w+/g)
+    if (matches) hashtags.push(...matches.map((t: string) => t.slice(1).toLowerCase()))
+
+    return {
+      id: v.aweme_id || v.video_id || '',
+      desc: title,
+      createTime: v.create_time || 0,
+      stats: {
+        playCount: v.play_count || 0,
+        likeCount: v.digg_count || 0,
+        commentCount: v.comment_count || 0,
+        shareCount: v.share_count || 0,
+      },
+      cover: v.cover || v.origin_cover || '',
+      originCover: v.origin_cover || '',
+      hashtags,
+    }
+  })
 }
