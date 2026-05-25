@@ -164,7 +164,7 @@ async function ResultsContent({ username }: { username: string }) {
             <div className={styles.heroPercentileFill} style={{ width: `${percentile}%` }} />
           </div>
           <p className={styles.heroPercentileNote}>
-            Better than <strong>{percentile}% of TikTok profiles</strong> we&apos;ve analyzed
+            Better than <strong>{percentile}%</strong> of TikTok profiles we&apos;ve analyzed
           </p>
         </div>
 
