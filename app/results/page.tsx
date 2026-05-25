@@ -9,6 +9,7 @@ import { scoreProfilePhoto } from '@/lib/vision'
 import { computeScores } from '@/lib/scoring'
 import ShareButton from '@/components/ShareButton'
 import HashtagAnalysis from '@/components/HashtagAnalysis'
+import KeywordAnalysis from '@/components/KeywordAnalysis'
 import styles from './page.module.css'
 
 async function getAnalysis(username: string) {
@@ -138,11 +139,24 @@ async function ResultsContent({ username }: { username: string }) {
         </div>
       </section>
 
-      {/* Video Analysis — Hashtags */}
-      {data.hashtagAnalysis && (
+      {/* Video Analysis — Hashtags + Keywords */}
+      {(data.hashtagAnalysis || data.keywordAnalysis) && (
         <section className={`${styles.section} fade-up`} style={{ '--delay': '200ms' } as React.CSSProperties}>
           <h2 className={styles.sectionTitle}>Video Analysis</h2>
-          <HashtagAnalysis data={data.hashtagAnalysis} />
+          <div className={styles.analysisStack}>
+            {data.hashtagAnalysis && (
+              <div>
+                <p className={styles.subSectionTitle}>Hashtag Strategy</p>
+                <HashtagAnalysis data={data.hashtagAnalysis} />
+              </div>
+            )}
+            {data.keywordAnalysis && (
+              <div>
+                <p className={styles.subSectionTitle}>Description Keywords</p>
+                <KeywordAnalysis data={data.keywordAnalysis} totalVideos={data.videoCount ?? data.keywordAnalysis.insights[0]?.totalVideos ?? 0} />
+              </div>
+            )}
+          </div>
         </section>
       )}
 

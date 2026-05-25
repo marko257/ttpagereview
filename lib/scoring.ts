@@ -35,11 +35,25 @@ export interface HashtagAnalysis {
   genericRatio: number          // 0–1: fraction of total hashtag uses that are generic
 }
 
+export interface KeywordInsight {
+  keyword: string       // niche topic keyword
+  inDescriptions: number  // videos that mention it in their caption
+  totalVideos: number
+  coverage: number        // 0–1
+}
+
+export interface KeywordAnalysis {
+  insights: KeywordInsight[]
+  overallCoverage: number   // avg coverage across top keywords
+  videosWithNoKeywords: number  // videos where desc has no niche keywords at all
+}
+
 export interface ScoreResult {
   overallScore: number
   categories: CategoryScore[]
   priorityFixes: PriorityFix[]
   hashtagAnalysis: HashtagAnalysis
+  keywordAnalysis: KeywordAnalysis | null
 }
 
 function statusFromScore(score: number): 'pass' | 'partial' | 'fail' {
@@ -432,5 +446,33 @@ export function computeScores(
     genericRatio: totalUses > 0 ? genericUses / totalUses : 0,
   }
 
-  return { overallScore, categories, priorityFixes, hashtagAnalysis }
+  // Keyword analysis — do top niche hashtags appear in video descriptions?
+  let keywordAnalysis: KeywordAnalysis | null = null
+  if (videos.length >= 2 && nicheTags.length > 0) {
+    const topKeywords = nicheTags.slice(0, 6).map(e => e.tag)
+
+    const insights: KeywordInsight[] = topKeywords.map(keyword => {
+      const inDescs = videos.filter(v =>
+        v.desc.toLowerCase().includes(keyword.toLowerCase())
+      ).length
+      return {
+        keyword,
+        inDescriptions: inDescs,
+        totalVideos: videos.length,
+        coverage: inDescs / videos.length,
+      }
+    })
+
+    const overallCoverage = insights.reduce((s, i) => s + i.coverage, 0) / insights.length
+
+    // Videos where no niche keyword appears in the description at all
+    const videosWithNoKeywords = videos.filter(v => {
+      const desc = v.desc.toLowerCase()
+      return !topKeywords.some(kw => desc.includes(kw.toLowerCase()))
+    }).length
+
+    keywordAnalysis = { insights, overallCoverage, videosWithNoKeywords }
+  }
+
+  return { overallScore, categories, priorityFixes, hashtagAnalysis, keywordAnalysis }
 }

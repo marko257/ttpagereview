@@ -169,6 +169,21 @@
   gap: 10px;
 }
 
+.analysisStack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.subSectionTitle {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
 /* Error state */
 .errorState {
   display: flex;
