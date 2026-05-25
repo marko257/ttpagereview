@@ -142,14 +142,23 @@ export default function Home() {
       {/* RCN Strip */}
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
-          <span className={styles.footerText}>Built by <strong>Rise Creator Network</strong> — helping TikTok LIVE creators 3–4x their income</span>
+          <div className={styles.footerLeft}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/rcn-logo.jpg" alt="Rise Creator Network" className={styles.footerLogo} />
+            <div>
+              <p className={styles.footerHeadline}>The official TikTok LIVE agency behind this tool.</p>
+              <p className={styles.footerText}>
+                Join 100+ creators getting free 1-on-1 coaching, a dedicated creator manager, monthly bonuses, and a 60-day growth plan — and keep 100% of everything you earn.
+              </p>
+            </div>
+          </div>
           <a
             href="https://join.risecreatornetwork.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-yellow"
+            className={styles.footerCta}
           >
-            Join RCN →
+            Join RCN — It&apos;s Free →
           </a>
         </div>
       </footer>
