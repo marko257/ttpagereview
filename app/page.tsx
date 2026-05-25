@@ -7,8 +7,9 @@ export default function Home() {
       {/* Nav */}
       <nav className={styles.nav}>
         <div className={styles.navLogo}>
-          <span className={styles.logoMark}>T</span>
-          <span className={styles.logoText}>ttPageReview</span>
+          <span className={styles.logoText}>TTPageReview</span>
+          <span className={styles.logoDivider}>by</span>
+          <span className={styles.logoRCN}>RCN</span>
         </div>
         <a
           href="https://join.risecreatornetwork.com/"

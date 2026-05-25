@@ -145,8 +145,9 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
     <div className={styles.page}>
       <nav className={styles.nav}>
         <a href="/" className={styles.navLogo}>
-          <span className={styles.logoMark}>T</span>
-          <span className={styles.logoText}>ttPageReview</span>
+          <span className={styles.logoText}>TTPageReview</span>
+          <span className={styles.logoDivider}>by</span>
+          <span className={styles.logoRCN}>RCN</span>
         </a>
         <a href="/" className="btn-primary">← New Review</a>
       </nav>
