@@ -33,6 +33,7 @@ export interface TikTokVideo {
     likeCount: number
     commentCount: number
     shareCount: number
+    collectCount: number
   }
   cover: string
   originCover: string
@@ -97,6 +98,7 @@ export async function fetchVideos(username: string, count = 20): Promise<TikTokV
         likeCount: v.digg_count || 0,
         commentCount: v.comment_count || 0,
         shareCount: v.share_count || 0,
+        collectCount: v.collect_count || v.saved_count || 0,
       },
       cover: v.cover || v.origin_cover || '',
       originCover: v.origin_cover || '',

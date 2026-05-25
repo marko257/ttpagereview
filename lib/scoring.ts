@@ -48,12 +48,22 @@ export interface KeywordAnalysis {
   videosWithNoKeywords: number  // videos where desc has no niche keywords at all
 }
 
+export interface VideoStats {
+  avgViews: number
+  avgLikes: number
+  avgComments: number
+  avgShares: number
+  avgSaves: number
+  videosAnalyzed: number
+}
+
 export interface ScoreResult {
   overallScore: number
   categories: CategoryScore[]
   priorityFixes: PriorityFix[]
   hashtagAnalysis: HashtagAnalysis
   keywordAnalysis: KeywordAnalysis | null
+  videoStats: VideoStats | null
 }
 
 function statusFromScore(score: number): 'pass' | 'partial' | 'fail' {
@@ -474,5 +484,16 @@ export function computeScores(
     keywordAnalysis = { insights, overallCoverage, videosWithNoKeywords }
   }
 
-  return { overallScore, categories, priorityFixes, hashtagAnalysis, keywordAnalysis }
+  // Per-video aggregate stats
+  const statVideos = videos.filter(v => v.stats.playCount > 0)
+  const videoStats: VideoStats | null = statVideos.length > 0 ? {
+    avgViews:    Math.round(statVideos.reduce((s, v) => s + v.stats.playCount,    0) / statVideos.length),
+    avgLikes:    Math.round(statVideos.reduce((s, v) => s + v.stats.likeCount,    0) / statVideos.length),
+    avgComments: Math.round(statVideos.reduce((s, v) => s + v.stats.commentCount, 0) / statVideos.length),
+    avgShares:   Math.round(statVideos.reduce((s, v) => s + v.stats.shareCount,   0) / statVideos.length),
+    avgSaves:    Math.round(statVideos.reduce((s, v) => s + v.stats.collectCount, 0) / statVideos.length),
+    videosAnalyzed: statVideos.length,
+  } : null
+
+  return { overallScore, categories, priorityFixes, hashtagAnalysis, keywordAnalysis, videoStats }
 }

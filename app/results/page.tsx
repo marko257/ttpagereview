@@ -10,6 +10,7 @@ import { computeScores } from '@/lib/scoring'
 import ShareButton from '@/components/ShareButton'
 import HashtagAnalysis from '@/components/HashtagAnalysis'
 import KeywordAnalysis from '@/components/KeywordAnalysis'
+import VideoStatsGrid from '@/components/VideoStatsGrid'
 import styles from './page.module.css'
 
 async function getAnalysis(username: string) {
@@ -127,6 +128,14 @@ async function ResultsContent({ username }: { username: string }) {
             </a>
           )}
         </div>
+      )}
+
+      {/* Video Stats */}
+      {data.videoStats && (
+        <section className={`${styles.section} fade-up`} style={{ '--delay': '80ms' } as React.CSSProperties}>
+          <h2 className={styles.sectionTitle}>Video Performance</h2>
+          <VideoStatsGrid data={data.videoStats} />
+        </section>
       )}
 
       {/* Categories */}
